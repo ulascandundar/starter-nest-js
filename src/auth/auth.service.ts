@@ -14,13 +14,18 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.validateUser(email, password);
     if (user) {
+      console.log('✅ validateUser başarılı:', user.email);
       return user;
     }
+    console.log('❌ validateUser başarısız:', email);
     return null;
   }
 
   async login(user: any) {
     const payload = { email: user.email, sub: user._id, role: user.role };
+    
+    console.log('🔐 JWT token oluşturuluyor, payload:', payload);
+    
     return {
       access_token: this.jwtService.sign(payload),
       user: {
@@ -31,6 +36,13 @@ export class AuthService {
         role: user.role,
       },
     };
+  }
+
+  async loginWithUser(user: any) {
+    console.log('🚀 loginWithUser - Doğrulanmış kullanıcı ile token oluşturuluyor:', user);
+    console.log('🚀 loginWithUser - Doğrulanmış kullanıcı ile token oluşturuluyor:', user.email);
+    
+    return this.login(user);
   }
 
   async loginWithCredentials(loginDto: LoginDto) {
